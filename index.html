@@ -1,0 +1,53 @@
+<html>
+<head>
+	<style>
+		.preload {
+			float:left;
+			width: 25%;
+			height: 250px;
+			opacity: 0;
+			transition: opacity 0.5s ease-out;
+		}
+		.preload.loaded {
+			opacity: 1;
+		}
+	</style>
+</head>
+<body>
+<div>
+<img class="preload" src="http://lorempixel.com/480/250/" />
+
+<img class="preload" src="http://lorempixel.com/480/250/" />
+
+<div class="preload" data-background-src="http://lorempixel.com/480/250/"></div>
+
+<!-- Broken URL on purpose -->
+<div class="preload" data-background-src="http://lorempixel.com480/250/"></div>
+</div>
+
+<script src="dist/imgwatcher.js"></script>
+<script>
+	(() => {
+		document.imgWatcher({
+		  selector: '.preload',
+
+		  progress: (img, percentage) => {
+		  	if(img.loaded) {
+		  		img.element.classList.add('loaded');
+		  	}
+		  },
+
+		  //Processing done
+		  always: (images) => {
+		    //images -> array of img objects
+		  },
+
+		  //All images loaded successfully
+		  done: (images) => {
+
+		  }
+		});
+	})();
+</script>
+</body>
+</html>
