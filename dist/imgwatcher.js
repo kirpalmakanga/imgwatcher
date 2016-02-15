@@ -41,10 +41,6 @@
         percentage = progress / total * 100;
 
         callback(settings.progress, imgObject, percentage);
-
-        if (progress === total) {
-            callback(settings.always, settings.images);
-        }
     }
 
     function loadImg(element, settings) {
@@ -98,6 +94,8 @@
 
         Promise.all(promises).then(function (images) {
             callback(settings.done, images);
-        }).catch(function (image) {});
+        }).catch(function (image) {
+            callback(settings.always, images);
+        });
     };
 })(document);
