@@ -1,47 +1,26 @@
-(document => {
+/*eslint-env es6*/
+'use strict';
+(function(document) {
+    
 
-    var progress = 0,
-        defaults = {
-            selector: 'img',
-            progress: null,
-            always: null,
-            done: null,
-            images: []
-        };
+    const defaults = {
+        selector: 'img',
+        progress: null,
+        always: null,
+        done: null,
+        images: []
+    };
 
-    //Private functions
-    function mergeObjects(defaults, options) {
-        var settings = {};
-        for (var defaultName in defaults) {
-            settings[defaultName] = defaults[defaultName];
-        }
-        for (var optionName in options) {
-            settings[optionName] = options[optionName];
+    const mergeObjects = (defaults, options) => {
+        var settings = defaults;
+
+        for (var option in options) {
+            settings[option] = options[option];
         }
         return settings;
-    }
+    };
 
-    function callback(fn, param1, param2) {
-        if (fn !== null && typeof fn === 'function') {
-            fn(param1, param2);
-        } else {
-            console.log('Callback not defined or not a function');
-        }
-    }
-
-    function watchProgress(imgObject, settings) {
-        var percentage = 0,
-            total = settings.imageCount,
-            errors = false;
-
-        progress++;
-
-        percentage = progress / total * 100;
-
-        callback(settings.progress, imgObject, percentage);
-    }
-
-    function loadImg(element, settings) {
+    const loadImg = (element, settings) => {
         let background = element.hasAttribute('data-background-src'),
             src = background ? element.getAttribute('data-background-src') : element.getAttribute('src'),
             imgObject = {
@@ -65,7 +44,7 @@
                 watchProgress(imgObject, settings);
 
                 resolve(imgObject);
-            }
+            };
 
             img.onerror = function() {
                 imgObject.loaded = false;
@@ -73,13 +52,36 @@
                 watchProgress(imgObject, settings);
 
                 reject(imgObject);
-            }
+            };
 
             img.src = src;
         });
+    };
+
+    let progress = 0;
+
+    function callback(fn, param1, param2) {
+        if (fn !== null && typeof fn === 'function') {
+            fn(param1, param2);
+        } else {
+            console.log('Callback not defined or not a function');
+        }        
     }
 
-    //Public method
+    function watchProgress(imgObject, settings) {
+        var percentage = 0,
+            total = settings.imageCount,
+            errors = false;
+
+        progress++;
+
+        percentage = progress / total * 100;
+
+        console.log(percentage);
+
+        callback(settings.progress, imgObject, percentage);
+    }
+    
     document.imgWatcher = function(options) {
 
         let settings = mergeObjects(defaults, options),
