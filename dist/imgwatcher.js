@@ -77,8 +77,6 @@
 
         percentage = progress / total * 100;
 
-        console.log(percentage);
-
         callback(settings.progress, imgObject, percentage);
     }
 
@@ -94,7 +92,7 @@
 
         Promise.all(promises).then(function (images) {
             callback(settings.done, images);
-        }).catch(function (image) {
+        }).catch(function (images) {
             callback(settings.always, images);
         });
     };

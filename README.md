@@ -1,15 +1,14 @@
 # imgpreloader
-Lightweight Javascript plugin for watching image loading
+Lightweight Javascript plugin for watching image loading (ES6 Version)
 ## Install
-`bower i imgpreloader --save`
+`bower i imgwatcher --save`
 ## Loading backgrounds
 ``` html
 <div data-background-src="http://placehold.it/350x150"></div>
 ```
 ## Init
-Fetches new content and replaces current one.
 ``` js
-imgPreloader.init({
+document.imgWatcher({
   selector: '.preload',
 
   progress: function(img, percentage) {
@@ -34,5 +33,5 @@ imgPreloader.init({
 ## Loading background images
 Just add a data attribute to the element you want to apply the image to.
 ``` html
-<div data-background-src="image.jpg">
+<div class="preload" data-background-src="image.jpg">
 ```

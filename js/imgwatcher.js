@@ -69,15 +69,13 @@
     }
 
     function watchProgress(imgObject, settings) {
-        var percentage = 0,
+        let percentage = 0,
             total = settings.imageCount,
             errors = false;
 
         progress++;
 
         percentage = progress / total * 100;
-
-        console.log(percentage);
 
         callback(settings.progress, imgObject, percentage);
     }
@@ -92,7 +90,7 @@
 
         Promise.all(promises).then(images => {
             callback(settings.done, images);
-        }).catch(image => {
+        }).catch(images => {
             callback(settings.always, images);
         });
     };
