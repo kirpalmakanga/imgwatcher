@@ -1,8 +1,10 @@
+/*jshint esversion: 6*/
 const gulp = require('gulp');
 const gulpLoadPlugins = require('gulp-load-plugins');
 const $ = gulpLoadPlugins();
 const runSequence = require('run-sequence');
 const browserSync = require('browser-sync').create();
+const strip = require('gulp-strip-comments');
 
 gulp.task('lint', () => {
   return gulp.src('js/*').pipe($.eslint({
@@ -18,9 +20,15 @@ gulp.task('lint', () => {
   // Brick on failure to be super strict
   .pipe($.eslint.failOnError());
 });
- 
+
 gulp.task('babel', () => {
-	return gulp.src('js/*.js')
+	return gulp.src([
+      'bower_components/es6-promise/es6-promise.js',
+      'bower_components/fetch/fetch.js',
+      'js/imgwatcher.js'
+    ])
+    .pipe($.concat('imgwatcher.js'))
+    .pipe(strip())
 		.pipe($.babel({
 			presets: ['es2015']
 		}))
@@ -42,7 +50,7 @@ gulp.task('webserver-dev', ['build'] ,() => {
 gulp.task('watch', ['build', 'lint'], () => {
   browserSync.init({
     files: ['js/*.js', '*.html'],
-    proxy: 'http://127.0.0.1:5000/imgwatcher/',
+    proxy: 'http://localhost/imgwatcher/',
   });
   gulp.watch(['js/*.js', '*.html'], ['build']);
 })

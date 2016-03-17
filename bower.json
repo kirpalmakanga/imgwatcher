@@ -1,5 +1,5 @@
 {
-  "name": "imgpreloader",
+  "name": "imgwatcher",
   "homepage": "https://github.com/kirpalmakanga/imgpreloader",
   "authors": [
     "Kirpal Makanga <makanga.kirpal@gmail.com"
@@ -22,5 +22,9 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "fetch": "^0.11.0",
+    "es6-promise": "^3.2.1"
+  }
 }

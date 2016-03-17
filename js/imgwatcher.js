@@ -1,7 +1,8 @@
+/*jshint esversion: 6*/
 /*eslint-env es6*/
-'use strict';
+
 (function(document) {
-    
+    'use strict';
 
     const defaults = {
         selector: 'img',
@@ -25,16 +26,14 @@
             src = background ? element.getAttribute('data-background-src') : element.getAttribute('src'),
             imgObject = {
                 element: element,
-                src: src
+                src: src,
+                loaded: true
             };
 
         return new Promise((resolve, reject) => {
-            let img = new Image();
+            const img = new Image();
 
             img.onload = function() {
-
-                imgObject.loaded = true;
-
                 if (background) {
                     element.style.backgroundImage = 'url(' + src + ')';
                 } else {
@@ -65,7 +64,7 @@
             fn(param1, param2);
         } else {
             console.log('Callback not defined or not a function');
-        }        
+        }
     }
 
     function watchProgress(imgObject, settings) {
@@ -79,7 +78,7 @@
 
         callback(settings.progress, imgObject, percentage);
     }
-    
+
     document.imgWatcher = function(options) {
 
         let settings = mergeObjects(defaults, options),
