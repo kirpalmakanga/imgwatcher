@@ -22,12 +22,7 @@ gulp.task('lint', () => {
 });
 
 gulp.task('babel', () => {
-	return gulp.src([
-      'bower_components/es6-promise/es6-promise.js',
-      'bower_components/fetch/fetch.js',
-      'js/imgwatcher.js'
-    ])
-    .pipe($.concat('imgwatcher.js'))
+	return gulp.src('js/imgwatcher.js')
     .pipe(strip())
 		.pipe($.babel({
 			presets: ['es2015']

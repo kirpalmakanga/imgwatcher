@@ -2,96 +2,100 @@
 /*eslint-env es6*/
 
 (function(document) {
-    'use strict';
+  'use strict';
 
+  const createSettings = (options) => {
     const defaults = {
-        selector: 'img',
-        progress: null,
-        always: null,
-        done: null,
-        images: []
+      selector: 'img',
+      progress: null,
+      always: null,
+      done: null,
+      images: []
     };
 
-    const mergeObjects = (defaults, options) => {
-        var settings = defaults;
+    let settings = defaults;
 
-        for (var option in options) {
-            settings[option] = options[option];
-        }
-        return settings;
+    for (let option in options) settings[option] = options[option];
+
+    return settings;
+  };
+
+  const loadImg = (element, settings) => {
+    const background = element.hasAttribute('data-background-src');
+    const src = background ? element.getAttribute('data-background-src') : element.getAttribute('src');
+    const imgObject = {
+      element: element,
+      src: src,
+      loaded: true
     };
 
-    const loadImg = (element, settings) => {
-        let background = element.hasAttribute('data-background-src'),
-            src = background ? element.getAttribute('data-background-src') : element.getAttribute('src'),
-            imgObject = {
-                element: element,
-                src: src,
-                loaded: true
-            };
+    return new Promise((resolve, reject) => {
+      const img = new Image();
 
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-
-            img.onload = function() {
-                if (background) {
-                    element.style.backgroundImage = 'url(' + src + ')';
-                } else {
-                    element.setAttribute('src', src);
-                }
-
-                watchProgress(imgObject, settings);
-
-                resolve(imgObject);
-            };
-
-            img.onerror = function() {
-                imgObject.loaded = false;
-
-                watchProgress(imgObject, settings);
-
-                reject(imgObject);
-            };
-
-            img.src = src;
-        });
-    };
-
-    let progress = 0;
-
-    function callback(fn, param1, param2) {
-        if (fn !== null && typeof fn === 'function') {
-            fn(param1, param2);
+      img.onload = function() {
+        if (background) {
+          element.style.backgroundImage = 'url(' + src + ')';
         } else {
-            console.log('Callback not defined or not a function');
+          element.setAttribute('src', src);
         }
+
+        watchProgress(imgObject, settings);
+
+        resolve(imgObject);
+      };
+
+      img.onerror = function() {
+        imgObject.loaded = false;
+
+        watchProgress(imgObject, settings);
+
+        reject(imgObject);
+      };
+
+      img.src = src;
+    });
+  };
+
+  let progress = 0;
+
+  function callback(fn, param1, param2) {
+    if (fn === null) return;
+
+    try {
+      fn(param1, param2);
+    } catch (error) {
+      console.log('imgWatcher: Callback not is not a function');
     }
+  }
 
-    function watchProgress(imgObject, settings) {
-        let percentage = 0,
-            total = settings.imageCount,
-            errors = false;
+  function watchProgress(imgObject, settings) {
+    let percentage = 0,
+      total = settings.imageCount,
+      errors = false;
 
-        progress++;
+    if (progress === total) {
+      progress = 0;
+    } else {
+      progress++;
 
-        percentage = progress / total * 100;
+      percentage = progress / total * 100;
 
-        callback(settings.progress, imgObject, percentage);
+      callback(settings.progress, imgObject, percentage);
     }
+  }
 
-    document.imgWatcher = function(options) {
+  document.imgWatcher = function(options) {
+    const settings = createSettings(options);
+    const images = [].slice.call(document.querySelectorAll(settings.selector));
+    const promises = images.map(element => loadImg(element, settings));
 
-        let settings = mergeObjects(defaults, options),
-            elements = Array.prototype.slice.call(document.querySelectorAll(settings.selector)),
-            promises = elements.map(element => loadImg(element, settings));
+    settings.imageCount = images.length;
 
-        settings.imageCount = elements.length;
-
-        Promise.all(promises).then(images => {
-            callback(settings.done, images);
-        }).catch(images => {
-            callback(settings.always, images);
-        });
-    };
+    Promise.all(promises).then(images => {
+      callback(settings.done, images);
+    }).catch(images => {
+      callback(settings.always, images);
+    });
+  };
 
 })(document);
