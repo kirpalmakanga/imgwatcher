@@ -64,7 +64,7 @@
     try {
       fn(param1, param2);
     } catch (error) {
-      console.log('imgWatcher: Callback not is not a function');
+      console.log(error);
     }
   }
 
