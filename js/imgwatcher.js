@@ -64,7 +64,7 @@
     try {
       fn(param1, param2);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
