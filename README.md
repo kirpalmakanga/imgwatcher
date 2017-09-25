@@ -1,5 +1,5 @@
 # imgpreloader
-Lightweight Javascript plugin for watching image loading (ES6 Version)
+Lightweight Javascript plugin to watch image loading
 ## Install
 `bower i imgwatcher --save`
 ## Loading backgrounds
